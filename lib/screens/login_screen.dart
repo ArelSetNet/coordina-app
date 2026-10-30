@@ -37,14 +37,18 @@ class _LoginScreenState extends State<LoginScreen> {
       password: _passwordController.text,
     );
 
+
     if (exito) {
       Get.snackbar(
         'Bienvenido',
         'Inicio de sesión correcto.',
         snackPosition: SnackPosition.BOTTOM,
       );
+
+      Get.offAllNamed('/inicio');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -13,16 +13,20 @@ import 'screens/registro_screen.dart';
 
 import 'config/app_theme.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   final apiService = Get.put(ApiService());
 
   final authService = Get.put(
     AuthService(apiService),
   );
 
-  Get.put(
+  final authController = Get.put(
     AuthController(authService),
   );
+
+  await authController.comprobarSesion();
 
   runApp(const MyApp());
 }
@@ -33,11 +37,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final authController = Get.find<AuthController>();
+
     return GetMaterialApp(
   title: 'CoordinaApp',
   debugShowCheckedModeBanner: false,
    theme: AppTheme.lightTheme,
-  initialRoute: AppRoutes.login,
+  
+  initialRoute: authController.estaAutenticado
+        ? AppRoutes.inicio
+        : AppRoutes.login,
+
   getPages: [
     GetPage(
       name: AppRoutes.login,
