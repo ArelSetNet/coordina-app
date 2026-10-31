@@ -12,6 +12,36 @@ class ActividadesController extends GetxController {
   final RxBool cargando = false.obs;
   final RxString mensajeError = ''.obs;
 
+  final RxString filtroEstado = 'Todos'.obs;
+  final RxString filtroPrioridad = 'Todas'.obs;
+
+  List<Actividad> get actividadesFiltradas {
+  return actividades.where((actividad) {
+    final coincideEstado =
+        filtroEstado.value == 'Todos' ||
+        actividad.estado == filtroEstado.value;
+
+    final coincidePrioridad =
+        filtroPrioridad.value == 'Todas' ||
+        actividad.prioridad == filtroPrioridad.value;
+
+    return coincideEstado && coincidePrioridad;
+  }).toList();
+}
+
+void cambiarFiltroEstado(String estado) {
+  filtroEstado.value = estado;
+}
+
+void cambiarFiltroPrioridad(String prioridad) {
+  filtroPrioridad.value = prioridad;
+}
+
+void limpiarFiltros() {
+  filtroEstado.value = 'Todos';
+  filtroPrioridad.value = 'Todas';
+}
+
   Future<void> cargarActividades() async {
     try {
       cargando.value = true;

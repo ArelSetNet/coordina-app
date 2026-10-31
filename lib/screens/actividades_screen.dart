@@ -91,35 +91,177 @@ class _ActividadesScreenState
             );
           }
 
-          return RefreshIndicator(
-            onRefresh: controller.cargarActividades,
-            child: ListView.separated(
+          return Column(
+  children: [
+    Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Filtrar actividades',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  initialValue:
+                      controller.filtroEstado.value,
+                  decoration: const InputDecoration(
+                    labelText: 'Estado',
+                    prefixIcon: Icon(
+                      Icons.filter_alt_outlined,
+                    ),
+                  ),
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'Todos',
+                      child: Text('Todos'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Pendiente',
+                      child: Text('Pendiente'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'En proceso',
+                      child: Text('En proceso'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Completada',
+                      child: Text('Completada'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      controller
+                          .cambiarFiltroEstado(value);
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  initialValue:
+                      controller.filtroPrioridad.value,
+                  decoration: const InputDecoration(
+                    labelText: 'Prioridad',
+                    prefixIcon: Icon(
+                      Icons.flag_outlined,
+                    ),
+                  ),
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'Todas',
+                      child: Text('Todas'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Alta',
+                      child: Text('Alta'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Media',
+                      child: Text('Media'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Baja',
+                      child: Text('Baja'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      controller
+                          .cambiarFiltroPrioridad(value);
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 8),
+
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: controller.limpiarFiltros,
+              icon: const Icon(
+                Icons.refresh_outlined,
+              ),
+              label: const Text(
+                'Limpiar filtros',
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+
+    Expanded(
+      child: RefreshIndicator(
+        onRefresh: controller.cargarActividades,
+        child: Obx(
+          () {
+            final lista =
+                controller.actividadesFiltradas;
+
+            if (lista.isEmpty) {
+              return ListView(
+                physics:
+                    const AlwaysScrollableScrollPhysics(),
+                children: const [
+                  SizedBox(height: 120),
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(24),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.filter_alt_off_outlined,
+                            size: 56,
+                          ),
+                          SizedBox(height: 12),
+                          Text(
+                            'No hay actividades que coincidan con los filtros.',
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            return ListView.separated(
               padding: const EdgeInsets.all(16),
-              itemCount: controller.actividades.length,
+              itemCount: lista.length,
               separatorBuilder: (context, index) =>
                   const SizedBox(height: 12),
               itemBuilder: (context, index) {
-                final actividad =
-                    controller.actividades[index];
+                final actividad = lista[index];
 
                 return Card(
                   child: ListTile(
                     contentPadding:
                         const EdgeInsets.all(16),
-
                     leading: const CircleAvatar(
                       child: Icon(
                         Icons.task_alt,
                       ),
                     ),
-
                     title: Text(
                       actividad.titulo,
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-
                     subtitle: Padding(
                       padding:
                           const EdgeInsets.only(top: 8),
@@ -146,12 +288,13 @@ class _ActividadesScreenState
                         ],
                       ),
                     ),
-
-                    trailing: PopupMenuButton<String>(
+                    trailing:
+                        PopupMenuButton<String>(
                       onSelected: (opcion) async {
                         if (opcion == 'editar') {
                           await Get.to(
-                            () => ActividadFormScreen(
+                            () =>
+                                ActividadFormScreen(
                               actividad: actividad,
                             ),
                           );
@@ -210,7 +353,8 @@ class _ActividadesScreenState
                           }
                         }
                       },
-                      itemBuilder: (context) => const [
+                      itemBuilder:
+                          (context) => const [
                         PopupMenuItem(
                           value: 'editar',
                           child: Row(
@@ -240,8 +384,13 @@ class _ActividadesScreenState
                   ),
                 );
               },
-            ),
-          );
+            );
+          },
+        ),
+      ),
+    ),
+  ],
+);
         },
       ),
 
