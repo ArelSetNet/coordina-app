@@ -53,6 +53,22 @@ class InicioScreen extends StatelessWidget {
                 authController.usuario.value?.email ?? '',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
+              const SizedBox(height: 24),
+
+              ElevatedButton.icon(
+                onPressed: () {
+                  Get.toNamed(
+                    AppRoutes.actividades,
+                  );
+                },
+                icon: const Icon(
+                  Icons.event_note_outlined,
+                ),
+                label: const Text(
+                  'Ver actividades',
+                ),
+              ),
+
             ],
           ),
         ),

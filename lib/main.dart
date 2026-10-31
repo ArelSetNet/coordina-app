@@ -3,20 +3,42 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'controllers/auth_controller.dart';
-import 'services/api_service.dart';
-import 'services/auth_service.dart';
+import 'controllers/actividades_controller.dart';
 
 import 'routes/app_routes.dart';
+
+import 'services/api_service.dart';
+import 'services/auth_service.dart';
+import 'services/actividad_service.dart';
+
 import 'screens/inicio_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/registro_screen.dart';
+import 'screens/actividades_screen.dart';
+import 'screens/actividad_form_screen.dart';
 
 import 'config/app_theme.dart';
+
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final apiService = Get.put(ApiService());
+
+  final actividadService = Get.put(
+     ActividadService(apiService),
+   );
+
+   Get.put(
+    ActividadesController(actividadService),
+   );
+
+  Get.put(
+    ActividadService(apiService),
+  );
+  
 
   final authService = Get.put(
     AuthService(apiService),
@@ -49,6 +71,17 @@ class MyApp extends StatelessWidget {
         : AppRoutes.login,
 
   getPages: [
+
+    GetPage(
+      name: AppRoutes.actividadFormulario,
+      page: () => const ActividadFormScreen(),
+    ),
+    
+    GetPage(
+      name: AppRoutes.actividades,
+      page: () => const ActividadesScreen(),
+     ),
+
     GetPage(
       name: AppRoutes.login,
       page: () => const LoginScreen(),
